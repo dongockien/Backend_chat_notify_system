@@ -60,7 +60,7 @@ Hệ thống Chat và Push Notification phân tán, chịu tải cao (High-throu
 ├── 🐘 PostgreSQL (RDBMS): Đảm bảo tính ACID (Users, Messages, Devices, Outbox, Notification_Logs).
 └── ⚡ Redis (In-memory Cache): Quản lý trạng thái hiện diện (Presence) và khóa Idempotency.
 
-ÁC QUYẾT ĐỊNH THIẾT KẾ CỐT LÕI (CORE DESIGN DECISIONS)
+CÁC QUYẾT ĐỊNH THIẾT KẾ CỐT LÕI (CORE DESIGN DECISIONS)
 1. Tại sao sử dụng Kafka thay vì gọi trực tiếp API FCM? (Kiểm soát Thông lượng - Throughput Control)
 Vấn đề (Synchronous Blocking): Nếu API Server nhận tin nhắn và tiến hành gọi trực tiếp dịch vụ Firebase cho 50 thành viên trong nhóm, tiến trình sẽ bị nghẽn (Block) chờ phản hồi từ mạng. Khi lưu lượng tăng đột biến, API Server sẽ cạn kiệt tài nguyên (Thread/Memory) và dẫn đến sập hệ thống (Crash).
 
