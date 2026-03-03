@@ -1,5 +1,5 @@
 🚀 Enterprise Distributed Chat & Notification System
-Hệ thống Chat và Push Notification phân tán, chịu tải cao (High-throughput), được thiết kế để giải quyết bài toán nghẽn cổ chai (Bottleneck) khi xử lý lưu lượng tin nhắn lớn. Dự án áp dụng kiến trúc Hướng Sự Kiện (Event-Driven Architecture) với Apache Kafka và mẫu thiết kế Transactional Outbox để đảm bảo tính nhất quán dữ liệu (Data Consistency) và không thất thoát tin nhắn (Zero Data Loss).
+Hệ thống Chat và Push Notification phân tán, chịu tải cao (High-throughput), được thiết kế để giải quyết bài toán (Bottleneck) khi xử lý lưu lượng tin nhắn lớn. Dự án áp dụng kiến trúc Hướng Sự Kiện (Event-Driven Architecture) với Apache Kafka và mẫu thiết kế Transactional Outbox để đảm bảo tính nhất quán dữ liệu (Data Consistency) và không thất thoát tin nhắn (Zero Data Loss).
 
 SƠ ĐỒ KIẾN TRÚC HỆ THỐNG (ARCHITECTURAL LAYERS)
 📱 [TẦNG 1: CLIENT / FRONTEND] - Ứng dụng Flutter
