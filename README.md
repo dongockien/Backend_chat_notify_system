@@ -1,7 +1,10 @@
-🚀 Enterprise Distributed Chat & Notification System
-Hệ thống Chat và Push Notification phân tán, chịu tải cao (High-throughput), được thiết kế để giải quyết bài toán (Bottleneck) khi xử lý lưu lượng tin nhắn lớn. Dự án áp dụng kiến trúc Hướng Sự Kiện (Event-Driven Architecture) với Apache Kafka và mẫu thiết kế Transactional Outbox để đảm bảo tính nhất quán dữ liệu (Data Consistency) và không thất thoát tin nhắn (Zero Data Loss).
+# 🚀 Enterprise Distributed Chat & Notification System
 
-SƠ ĐỒ KIẾN TRÚC HỆ THỐNG (ARCHITECTURAL LAYERS)
+Hệ thống Chat và Push Notification phân tán, chịu tải cao (High-throughput), được thiết kế để giải quyết bài toán nghẽn cổ chai (Bottleneck) khi xử lý lưu lượng tin nhắn lớn. Dự án áp dụng kiến trúc Hướng Sự Kiện (Event-Driven Architecture) với Apache Kafka và mẫu thiết kế Transactional Outbox để đảm bảo tính nhất quán dữ liệu (Data Consistency) và không thất thoát tin nhắn (Zero Data Loss).
+
+## 🌳 SƠ ĐỒ KIẾN TRÚC HỆ THỐNG (ARCHITECTURAL LAYERS)
+
+```text
 📱 [TẦNG 1: CLIENT / FRONTEND] - Ứng dụng Flutter
 │
 ├── 🔑 Xác thực & Định danh (Authentication & Device Registration)
@@ -57,16 +60,16 @@ SƠ ĐỒ KIẾN TRÚC HỆ THỐNG (ARCHITECTURAL LAYERS)
 ├── 🐘 PostgreSQL (RDBMS): Đảm bảo tính ACID (Users, Messages, Devices, Outbox, Notification_Logs).
 └── ⚡ Redis (In-memory Cache): Quản lý trạng thái hiện diện (Presence) và khóa Idempotency.
 
-CÁC QUYẾT ĐỊNH THIẾT KẾ CỐT LÕI (CORE DESIGN DECISIONS)
+ÁC QUYẾT ĐỊNH THIẾT KẾ CỐT LÕI (CORE DESIGN DECISIONS)
 1. Tại sao sử dụng Kafka thay vì gọi trực tiếp API FCM? (Kiểm soát Thông lượng - Throughput Control)
 Vấn đề (Synchronous Blocking): Nếu API Server nhận tin nhắn và tiến hành gọi trực tiếp dịch vụ Firebase cho 50 thành viên trong nhóm, tiến trình sẽ bị nghẽn (Block) chờ phản hồi từ mạng. Khi lưu lượng tăng đột biến, API Server sẽ cạn kiệt tài nguyên (Thread/Memory) và dẫn đến sập hệ thống (Crash).
 
 Giải pháp (Asynchronous Decoupling): Bằng việc đưa Kafka vào giữa, API Server chỉ thực hiện thao tác tốn ít thời gian nhất: Lưu DB và trả về 200 OK (Thực tế đạt tốc độ ~11ms/request). Các yêu cầu gửi thông báo phức tạp và tốn thời gian sẽ được Kafka lưu trữ an toàn, sau đó Consumer Worker sẽ lấy ra xử lý với tốc độ được kiểm soát (Rate limiting), bảo vệ API Server khỏi tình trạng quá tải.
 
 2. Transactional Outbox Pattern (Đảm bảo tính Nhất quán - Zero Data Loss)
-Tránh rủi ro hệ thống gặp sự cố (Network Failure) sau khi lưu DB nhưng chưa kịp đẩy sự kiện lên Kafka.
+Mục tiêu: Tránh rủi ro hệ thống gặp sự cố (Network Failure) sau khi lưu DB nhưng chưa kịp đẩy sự kiện lên Kafka.
 
-Sử dụng DB Transaction: Dữ liệu tin nhắn (messages) và dữ liệu sự kiện (outbox) được lưu đồng thời. Nếu quá trình bị lỗi, toàn bộ sẽ được Rollback. Nếu thành công, Worker sẽ đảm bảo sự kiện được đưa lên Kafka (At-least-once delivery).
+Giải pháp: Sử dụng DB Transaction: Dữ liệu tin nhắn (messages) và dữ liệu sự kiện (outbox) được lưu đồng thời. Nếu quá trình bị lỗi, toàn bộ sẽ được Rollback. Nếu thành công, Worker sẽ đảm bảo sự kiện được đưa lên Kafka (At-least-once delivery).
 
 3. Tối ưu hóa API Call bằng Multicast Batching & Smart Filtering
 Gửi thông báo đẩy là tác vụ tốn kém tài nguyên (Cost-heavy). Hệ thống áp dụng 2 cơ chế:
